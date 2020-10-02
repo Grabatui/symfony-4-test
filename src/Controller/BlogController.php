@@ -66,7 +66,7 @@ class BlogController extends AbstractController
             throw new NotFoundHttpException('Post not found');
         }
 
-        return $this->render('blog/show.html.twig', [
+        return $this->render('blog/detail.html.twig', [
             'id' => $id,
             'post' => $posts[$id],
         ]);
