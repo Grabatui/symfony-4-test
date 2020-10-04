@@ -3,8 +3,6 @@
 {% block title %}Blog index{% endblock %}
 
 {% block body %}
-    <a href="{{ path('blog_add') }}" style="display: block; margin-bottom: 10px; font-size: 18px;">Add</a>
-
     {% for id, post in posts %}
         <div style="margin-bottom: 10px; border: 1px solid black; padding: 0 15px;">
             <p><a href="{{ path('blog_show', {'id': id}) }}">ID {{ id }}</a></p>
