@@ -48,7 +48,7 @@ class MicroPostController extends AbstractController
      */
     public function index()
     {
-        $posts = $this->microPostRepository->findAll();
+        $posts = $this->microPostRepository->findBy([], ['time' => 'desc']);
 
         return $this->render('micro-post/index.html.twig', compact('posts'));
     }
@@ -62,14 +62,14 @@ class MicroPostController extends AbstractController
      */
     public function add(Request $request)
     {
-        $microPost = new MicroPost;
-        $microPost->setTime(new DateTime());
+        $post = new MicroPost;
+        $post->setTime(new DateTime());
 
-        $form = $this->formFactory->create(MicroPostType::class, $microPost);
+        $form = $this->formFactory->create(MicroPostType::class, $post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($microPost);
+            $this->entityManager->persist($post);
             $this->entityManager->flush();
 
             return $this->redirectToRoute('micro_post_index');
@@ -87,5 +87,27 @@ class MicroPostController extends AbstractController
     public function detail(MicroPost $post)
     {
         return $this->render('micro-post/detail.html.twig', compact('post'));
+    }
+
+    /**
+     * @Route("/{id}/edit", name="micro_post_edit")
+     *
+     * @param MicroPost $post
+     * @param Request $request
+     * @return Response
+     */
+    public function edit(MicroPost $post, Request $request)
+    {
+        $form = $this->formFactory->create(MicroPostType::class, $post);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->persist($post);
+            $this->entityManager->flush();
+
+            return $this->redirectToRoute('micro_post_index');
+        }
+
+        return $this->render('micro-post/edit.html.twig', ['form' => $form->createView()]);
     }
 }
