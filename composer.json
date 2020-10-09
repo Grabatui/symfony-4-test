@@ -4,7 +4,7 @@
     "license": "MIT",
     "description": "A skeleton to start a new Symfony website",
     "require": {
-        "php": ">=7.1.3",
+        "php": ">=7.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "composer/package-versions-deprecated": "^1.11",
@@ -38,7 +38,8 @@
         "doctrine/doctrine-fixtures-bundle": "^3.3",
         "symfony/debug-pack": "*",
         "symfony/profiler-pack": "*",
-        "symfony/test-pack": "*"
+        "symfony/test-pack": "*",
+        "willdurand/faker-bundle": "^1.4"
     },
     "config": {
         "preferred-install": {

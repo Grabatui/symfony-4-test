@@ -17,27 +17,27 @@ class User implements UserInterface, Serializable
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id;
 
     /**
      * @ORM\Column(type="string", length=50, unique=true)
      */
-    private $username;
+    private ?string $username;
 
     /**
      * @ORM\Column(type="string")
      */
-    private $password;
+    private ?string $password;
 
     /**
      * @ORM\Column(type="string", length=254, unique=true)
      */
-    private $email;
+    private ?string $email;
 
     /**
      * @ORM\Column(type="string", length=50)
      */
-    private $fullName;
+    private ?string $fullName;
 
     public function getId(): ?int
     {
@@ -61,6 +61,14 @@ class User implements UserInterface, Serializable
     }
 
     /**
+     * @param string|null $password
+     */
+    public function setPassword(?string $password): void
+    {
+        $this->password = $password;
+    }
+
+    /**
      * @inheritDoc
      */
     public function getSalt()
@@ -77,12 +85,17 @@ class User implements UserInterface, Serializable
     }
 
     /**
+     * @param string|null $username
+     */
+    public function setUsername(?string $username): void
+    {
+        $this->username = $username;
+    }
+
+    /**
      * @inheritDoc
      */
-    public function eraseCredentials()
-    {
-
-    }
+    public function eraseCredentials() {}
 
     /**
      * @inheritDoc
@@ -101,6 +114,38 @@ class User implements UserInterface, Serializable
      */
     public function unserialize($serialized)
     {
-        list($this->id, $this->username, $this->password) = unserialize($serialized);
+        [$this->id, $this->username, $this->password] = unserialize($serialized);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string|null $email
+     */
+    public function setEmail(?string $email): void
+    {
+        $this->email = $email;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFullName(): ?string
+    {
+        return $this->fullName;
+    }
+
+    /**
+     * @param string|null $fullName
+     */
+    public function setFullName(?string $fullName): void
+    {
+        $this->fullName = $fullName;
     }
 }
