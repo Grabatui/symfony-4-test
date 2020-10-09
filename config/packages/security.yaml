@@ -17,3 +17,14 @@ security:
             pattern: ^/
             anonymous: lazy
             provider: database_users
+
+            form_login:
+                check_path: security_login
+                login_path: security_login
+                csrf_token_generator: security.csrf.token_manager
+                default_target_path: micro_post_index
+                use_referer: true
+
+            logout:
+                path: security_logout
+                target: micro_post_index
