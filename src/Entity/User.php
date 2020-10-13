@@ -201,4 +201,15 @@ class User implements UserInterface, Serializable
     {
         return $this->posts;
     }
+
+    public function getInitials(): string
+    {
+        $fullNameParts = explode(' ', $this->fullName);
+
+        $initials = array_map(function (string $namePart): string {
+            return $namePart[0];
+        }, $fullNameParts);
+
+        return implode(array_slice($initials, 0, 2));
+    }
 }
