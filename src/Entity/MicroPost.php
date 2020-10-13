@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\MicroPostRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -16,19 +17,25 @@ class MicroPost
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=280)
      * @Assert\NotBlank()
      * @Assert\Length(min=10)
      */
-    private $text;
+    private ?string $text;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $time;
+    private ?DateTime $time;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="posts")
+     * @ORM\JoinColumn()
+     */
+    private ?User $user;
 
     public function getId(): ?int
     {
@@ -65,5 +72,21 @@ class MicroPost
     public function setTime($time): void
     {
         $this->time = $time;
+    }
+
+    /**
+     * @return User|null
+     */
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User|null $user
+     */
+    public function setUser(?User $user): void
+    {
+        $this->user = $user;
     }
 }
