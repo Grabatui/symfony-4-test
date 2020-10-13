@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\MicroPost;
 use App\Form\MicroPostType;
 use App\Repository\MicroPostRepository;
+use App\Security\MicroPostVoter;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -105,6 +106,8 @@ class MicroPostController extends AbstractController
      */
     public function edit(MicroPost $post, Request $request)
     {
+        $this->denyAccessUnlessGranted(MicroPostVoter::EDIT, $post);
+
         $form = $this->formFactory->create(MicroPostType::class, $post);
         $form->handleRequest($request);
 
@@ -126,6 +129,8 @@ class MicroPostController extends AbstractController
      */
     public function delete(MicroPost $post)
     {
+        $this->denyAccessUnlessGranted(MicroPostVoter::DELETE, $post);
+
         $this->entityManager->remove($post);
         $this->entityManager->flush();
 
