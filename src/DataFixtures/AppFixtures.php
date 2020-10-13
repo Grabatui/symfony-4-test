@@ -4,7 +4,6 @@ namespace App\DataFixtures;
 
 use App\Entity\MicroPost;
 use App\Entity\User;
-use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -45,7 +44,11 @@ class AppFixtures extends Fixture
         $this->manager->persist($this->makeJohnDoeUser());
 
         for ($i = 0; $i < 10; $i++) {
-            $this->manager->persist($this->makeFakeUser());
+            $user = $this->makeFakeUser();
+
+            $this->manager->persist($user);
+
+            $this->addReference($i . '_user', $user);
         }
     }
 
@@ -57,6 +60,8 @@ class AppFixtures extends Fixture
         $user->setFullName('John Doe');
         $user->setPassword($this->encoder->encodePassword($user, 'john123'));
 
+        $this->addReference('john_doe', $user);
+
         return $user;
     }
 
@@ -64,7 +69,9 @@ class AppFixtures extends Fixture
     {
         $user = new User;
 
-        $user->setUsername($this->faker->userName);
+        $username = $this->faker->userName;
+
+        $user->setUsername($username);
         $user->setEmail($this->faker->email);
         $user->setFullName($this->faker->name);
         $user->setPassword($this->encoder->encodePassword($user, $this->faker->password));
@@ -79,7 +86,21 @@ class AppFixtures extends Fixture
             $microPost->setText($this->faker->sentence($this->faker->numberBetween(3, 6)));
             $microPost->setTime($this->faker->dateTimeBetween('-1 year'));
 
+            $microPost->setUser($this->chooseMicroPostUser());
+
             $this->manager->persist($microPost);
         }
+    }
+
+    private function chooseMicroPostUser(): User
+    {
+        $chosenUserIndex = $this->faker->numberBetween(0, 10);
+
+        $referenceCode = ($chosenUserIndex === 10) ? 'john_doe' : $chosenUserIndex . '_user';
+
+        /** @var User $user */
+        $user = $this->getReference($referenceCode);
+
+        return $user;
     }
 }
