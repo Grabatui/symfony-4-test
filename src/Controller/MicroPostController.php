@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\MicroPost;
+use App\Entity\User;
 use App\Form\MicroPostType;
 use App\Repository\MicroPostRepository;
 use App\Security\MicroPostVoter;
@@ -15,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @Route("/micro-post")
@@ -24,31 +26,37 @@ class MicroPostController extends AbstractController
     /**
      * @var MicroPostRepository
      */
-    private $microPostRepository;
+    private MicroPostRepository $microPostRepository;
     /**
      * @var FormFactoryInterface
      */
-    private $formFactory;
+    private FormFactoryInterface $formFactory;
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
     /**
      * @var FlashBagInterface
      */
-    private $flashBag;
+    private FlashBagInterface $flashBag;
+    /**
+     * @var TokenStorageInterface
+     */
+    private TokenStorageInterface $tokenStorage;
 
     public function __construct(
         MicroPostRepository $microPostRepository,
         FormFactoryInterface $formFactory,
         EntityManagerInterface $entityManager,
-        FlashBagInterface $flashBag
+        FlashBagInterface $flashBag,
+        TokenStorageInterface $tokenStorage
     )
     {
         $this->microPostRepository = $microPostRepository;
         $this->formFactory = $formFactory;
         $this->entityManager = $entityManager;
         $this->flashBag = $flashBag;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -70,8 +78,14 @@ class MicroPostController extends AbstractController
      */
     public function add(Request $request)
     {
+        $this->denyAccessUnlessGranted(User::ROLE_USER);
+
+        /** @var User $user */
+        $user = $this->tokenStorage->getToken()->getUser();
+
         $post = new MicroPost;
         $post->setTime(new DateTime());
+        $post->setUser($user);
 
         $form = $this->formFactory->create(MicroPostType::class, $post);
         $form->handleRequest($request);
