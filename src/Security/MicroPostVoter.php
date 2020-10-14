@@ -5,6 +5,7 @@ namespace App\Security;
 use App\Entity\MicroPost;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class MicroPostVoter extends Voter
@@ -13,6 +14,16 @@ class MicroPostVoter extends Voter
     public const DELETE = 'delete';
 
     public const ACTIONS = [self::EDIT, self::DELETE];
+
+    /**
+     * @var AccessDecisionManagerInterface
+     */
+    private AccessDecisionManagerInterface $decisionManager;
+
+    public function __construct(AccessDecisionManagerInterface $decisionManager)
+    {
+        $this->decisionManager = $decisionManager;
+    }
 
     protected function supports($attribute, $subject): bool
     {
@@ -35,6 +46,10 @@ class MicroPostVoter extends Voter
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
+        if ($this->decisionManager->decide($token, [User::ROLE_ADMIN])) {
+            return true;
+        }
+
         $user = $token->getUser();
 
         if (!($user instanceof User)) {

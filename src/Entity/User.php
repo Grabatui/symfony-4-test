@@ -19,6 +19,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class User implements UserInterface, Serializable
 {
+    public const ROLE_USER = 'ROLE_USER';
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -59,6 +62,11 @@ class User implements UserInterface, Serializable
     private ?string $fullName;
 
     /**
+     * @ORM\Column(type="simple_array")
+     */
+    private array $roles;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\MicroPost", mappedBy="user")
      */
     private ?Collection $posts;
@@ -78,7 +86,15 @@ class User implements UserInterface, Serializable
      */
     public function getRoles()
     {
-        return ['ROLE_USER'];
+        return $this->roles;
+    }
+
+    /**
+     * @param array $roles
+     */
+    public function setRoles(array $roles): void
+    {
+        $this->roles = $roles;
     }
 
     /**

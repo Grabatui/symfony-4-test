@@ -41,6 +41,7 @@ class AppFixtures extends Fixture
 
     private function createUsers()
     {
+        $this->manager->persist($this->makeAdminUser());
         $this->manager->persist($this->makeJohnDoeUser());
 
         for ($i = 0; $i < 10; $i++) {
@@ -52,6 +53,18 @@ class AppFixtures extends Fixture
         }
     }
 
+    private function makeAdminUser(): User
+    {
+        $user = new User;
+        $user->setUsername('admin');
+        $user->setEmail('admin@admin.com');
+        $user->setFullName('Admin admin');
+        $user->setPassword($this->encoder->encodePassword($user, 'admin123'));
+        $user->setRoles([User::ROLE_ADMIN]);
+
+        return $user;
+    }
+
     private function makeJohnDoeUser(): User
     {
         $user = new User;
@@ -59,6 +72,7 @@ class AppFixtures extends Fixture
         $user->setEmail('john@doe.com');
         $user->setFullName('John Doe');
         $user->setPassword($this->encoder->encodePassword($user, 'john123'));
+        $user->setRoles([User::ROLE_USER]);
 
         $this->addReference('john_doe', $user);
 
@@ -75,6 +89,7 @@ class AppFixtures extends Fixture
         $user->setEmail($this->faker->email);
         $user->setFullName($this->faker->name);
         $user->setPassword($this->encoder->encodePassword($user, $this->faker->password));
+        $user->setRoles([User::ROLE_USER]);
 
         return $user;
     }
