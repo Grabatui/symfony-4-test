@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {{ include('micro-post/_partial/post.html.twig', {'post': post}) }}
+    {{ include('micro-post/_partial/post.html.twig', {'post': post, need_to_link_wrap: false}) }}
 {% endblock %}

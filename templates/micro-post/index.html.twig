@@ -9,9 +9,7 @@
 
     {% for post in posts %}
         <div class="border-bottom border-gray">
-            <a href="{{ path('micro_post_detail', {'id': post.id}) }}">
-                {{ include('micro-post/_partial/post.html.twig', {'post': post}) }}
-            </a>
+            {{ include('micro-post/_partial/post.html.twig', {'post': post, need_to_link_wrap: true}) }}
 
             <small class="d-block text-right pb-2">
                 {% if is_granted('edit', post) %}

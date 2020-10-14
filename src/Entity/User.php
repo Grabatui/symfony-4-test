@@ -211,9 +211,9 @@ class User implements UserInterface, Serializable
     }
 
     /**
-     * @return ArrayCollection|null
+     * @return Collection|null
      */
-    public function getPosts(): ?ArrayCollection
+    public function getPosts(): ?Collection
     {
         return $this->posts;
     }

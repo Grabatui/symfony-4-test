@@ -101,6 +101,19 @@ class MicroPostController extends AbstractController
     }
 
     /**
+     * @Route("/user/{username}", name="micro_post_user")
+     *
+     * @param User $user
+     * @return Response
+     */
+    public function userPosts(User $user)
+    {
+        $posts = $user->getPosts();
+
+        return $this->render('micro-post/index.html.twig', compact('posts'));
+    }
+
+    /**
      * @Route("/{id}", name="micro_post_detail")
      *
      * @param MicroPost $post

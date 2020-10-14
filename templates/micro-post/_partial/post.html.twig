@@ -3,10 +3,17 @@
 
     <p class="media-body mb-0 small lh-125">
         <span class="d-block">
-            <strong class="text-gray-dark">@{{ post.user.username }}</strong>
+            <a href="{{ path('micro_post_user', {'username': post.user.username}) }}">
+                <strong class="text-gray-dark">@{{ post.user.username }}</strong>
+            </a>
+
             <small>· {{ post.time|date('d/m/Y') }}</small>
         </span>
 
-        {{ post.text }}
+        {% if need_to_link_wrap %}
+            <a href="{{ path('micro_post_detail', {'id': post.id}) }}">{{ post.text }}</a>
+        {% else %}
+            {{ post.text }}
+        {% endif %}
     </p>
 </div>
