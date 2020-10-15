@@ -7,7 +7,6 @@ use App\Entity\User;
 use App\Form\MicroPostType;
 use App\Repository\MicroPostRepository;
 use App\Security\MicroPostVoter;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -84,7 +83,6 @@ class MicroPostController extends AbstractController
         $user = $this->tokenStorage->getToken()->getUser();
 
         $post = new MicroPost;
-        $post->setTime(new DateTime());
         $post->setUser($user);
 
         $form = $this->formFactory->create(MicroPostType::class, $post);
@@ -139,7 +137,6 @@ class MicroPostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($post);
             $this->entityManager->flush();
 
             return $this->redirectToRoute('micro_post_index');
