@@ -71,9 +71,30 @@ class User implements UserInterface, Serializable
      */
     private ?Collection $posts;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="following")
+     */
+    private ?Collection $followers;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="followers")
+     * @ORM\JoinTable(
+     *     name="following",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="following_user_id", referencedColumnName="id")
+     *     }
+     * )
+     */
+    private ?Collection $following;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection;
+        $this->followers = new ArrayCollection;
+        $this->following = new ArrayCollection;
     }
 
     public function getId(): ?int
@@ -227,5 +248,21 @@ class User implements UserInterface, Serializable
         }, $fullNameParts);
 
         return implode(array_slice($initials, 0, 2));
+    }
+
+    /**
+     * @return Collection|null
+     */
+    public function getFollowers()
+    {
+        return $this->followers;
+    }
+
+    /**
+     * @return Collection|null
+     */
+    public function getFollowing()
+    {
+        return $this->following;
     }
 }
