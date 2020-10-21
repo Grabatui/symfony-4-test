@@ -4,7 +4,17 @@
     <div class="card-group py-2">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">{{ user.fullName }} <small>@{{ user.username }}</small></h5>
+                <h5 class="card-title" style="margin-bottom: 0;">{{ user.fullName }} | <small>@{{ user.username }}</small></h5>
+
+                {% if is_granted('ROLE_USER') and user != app.user %}
+                    <div class="pt-2">
+                        {% if user.followers.contains(app.user) %}
+                            <a href="{{ path('following_unfollow', {'id': user.id}) }}" class="btn btn-outline-danger">Unfollow</a>
+                        {% else %}
+                            <a href="{{ path('following_follow', {'id': user.id}) }}" class="btn btn-outline-primary">Follow</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
