@@ -26,18 +26,22 @@ class MicroPostController extends AbstractController
      * @var MicroPostRepository
      */
     private MicroPostRepository $microPostRepository;
+
     /**
      * @var FormFactoryInterface
      */
     private FormFactoryInterface $formFactory;
+
     /**
      * @var EntityManagerInterface
      */
     private EntityManagerInterface $entityManager;
+
     /**
      * @var FlashBagInterface
      */
     private FlashBagInterface $flashBag;
+
     /**
      * @var TokenStorageInterface
      */
@@ -63,7 +67,13 @@ class MicroPostController extends AbstractController
      */
     public function index()
     {
-        $posts = $this->microPostRepository->findBy([], ['time' => 'desc']);
+        $currentUser = $this->tokenStorage->getToken()->getUser();
+
+        if ($currentUser instanceof User) {
+            $posts = $this->microPostRepository->findAllByUsers($currentUser->getFollowing());
+        } else {
+            $posts = $this->microPostRepository->findBy([], ['time' => 'desc']);
+        }
 
         return $this->render('micro-post/index.html.twig', compact('posts'));
     }
