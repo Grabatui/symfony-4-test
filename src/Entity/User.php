@@ -69,12 +69,12 @@ class User implements UserInterface, Serializable
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\MicroPost", mappedBy="user")
      */
-    private ?Collection $posts;
+    private Collection $posts;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="following")
      */
-    private ?Collection $followers;
+    private Collection $followers;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="followers")
@@ -88,13 +88,19 @@ class User implements UserInterface, Serializable
      *     }
      * )
      */
-    private ?Collection $following;
+    private Collection $following;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\MicroPost", mappedBy="likedBy")
+     */
+    private Collection $microPostsLiked;
 
     public function __construct()
     {
         $this->posts = new ArrayCollection;
         $this->followers = new ArrayCollection;
         $this->following = new ArrayCollection;
+        $this->microPostsLiked = new ArrayCollection;
     }
 
     public function getId(): ?int
@@ -282,5 +288,13 @@ class User implements UserInterface, Serializable
         }
 
         $this->getFollowing()->removeElement($userToUnfollow);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getMicroPostsLiked()
+    {
+        return $this->microPostsLiked;
     }
 }

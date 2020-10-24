@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\MicroPostRepository;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -37,6 +39,25 @@ class MicroPost
      * @ORM\JoinColumn(nullable=false)
      */
     private ?User $user;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="microPostsLiked")
+     * @ORM\JoinTable(
+     *     name="micro_post_likes",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="micro_post_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *     }
+     * )
+     */
+    private Collection $likedBy;
+
+    public function __construct()
+    {
+        $this->likedBy = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -97,5 +118,31 @@ class MicroPost
     public function setTimeOnPersist(): void
     {
         $this->setTime(new DateTime());
+    }
+
+    /**
+     * @return Collection|null
+     */
+    public function getLikedBy()
+    {
+        return $this->likedBy;
+    }
+
+    public function like(User $user): void
+    {
+        if ($this->getLikedBy()->contains($user)) {
+            return;
+        }
+
+        $this->getLikedBy()->add($user);
+    }
+
+    public function unlike(User $user): void
+    {
+        if (!$this->getLikedBy()->contains($user)) {
+            return;
+        }
+
+        $this->getLikedBy()->removeElement($user);
     }
 }
