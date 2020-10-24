@@ -2,4 +2,67 @@
 
 {% block body %}
     {{ include('micro-post/_partial/post.html.twig', {'post': post, need_to_link_wrap: false}) }}
+
+    {% set isLiked = post.isLikedByUser(app.user) %}
+
+    <div class="pt-2">
+        <button
+            style="display: {{ isLiked ? 'none' : 'block' }};"
+            class="btn btn-sm btn-outline-secondary"
+            id="like"
+        >Like <span class="badge badge-light js-likes_count">{{ post.getLikedBy.count }}</span></button>
+
+        <button
+            style="display: {{ isLiked ? 'block' : 'none' }};"
+            class="btn btn-sm btn-outline-danger"
+            id="unlike"
+        >Unlike <span class="badge badge-light js-likes_count">{{ post.getLikedBy.count }}</span></button>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="application/javascript">
+        const likeButton = document.getElementById(`like`);
+        const unlikeButton = document.getElementById(`unlike`);
+
+        const switchButtons = (button, oppositeButton) => {
+            button.style.display = `none`;
+            oppositeButton.style.display = `block`;
+        };
+
+        const addOnClickButtonEvent = (button, oppositeButton, path) => {
+            const callback = (event) => {
+                {% if not app.user %}
+                    return window.location.href = `{{ path('security_login') }}`;
+                {% endif %}
+
+                event.preventDefault();
+
+                button.disabled = true;
+
+                fetch(path, {credentials: `include`})
+                    .then((response) => response.json())
+                    .then((response) => {
+                        oppositeButton.querySelector(`.js-likes_count`).innerText = response.count;
+
+                        switchButtons(button, oppositeButton);
+
+                        button.disabled = false;
+                    })
+                    .catch(() => {
+                        switchButtons(button, oppositeButton);
+
+                        button.disabled = false;
+                    });
+            };
+
+            button.removeEventListener(`click`, callback);
+            button.addEventListener(`click`, callback);
+        };
+
+        addOnClickButtonEvent(likeButton, unlikeButton, `{{ path('likes_like', {'id': post.id}) }}`);
+        addOnClickButtonEvent(unlikeButton, likeButton, `{{ path('likes_unlike', {'id': post.id}) }}`);
+    </script>
 {% endblock %}

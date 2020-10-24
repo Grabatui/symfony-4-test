@@ -128,9 +128,14 @@ class MicroPost
         return $this->likedBy;
     }
 
+    public function isLikedByUser(?User $user): bool
+    {
+        return ($user instanceof User) ? $this->getLikedBy()->contains($user) : false;
+    }
+
     public function like(User $user): void
     {
-        if ($this->getLikedBy()->contains($user)) {
+        if ($this->isLikedByUser($user)) {
             return;
         }
 
@@ -139,7 +144,7 @@ class MicroPost
 
     public function unlike(User $user): void
     {
-        if (!$this->getLikedBy()->contains($user)) {
+        if (!$this->isLikedByUser($user)) {
             return;
         }
 
