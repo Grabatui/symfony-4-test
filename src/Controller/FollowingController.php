@@ -25,11 +25,11 @@ class FollowingController extends AbstractController
         /** @var User $currentUser */
         $currentUser = $this->getUser();
 
-        if ($currentUser->getId() === $user->getId() || $currentUser->getFollowing()->contains($user)) {
+        if ($currentUser->getId() === $user->getId()) {
             return $this->makeResponse($user);
         }
 
-        $currentUser->getFollowing()->add($user);
+        $currentUser->follow($user);
 
         $this->getDoctrine()->getManager()->flush();
         return $this->makeResponse($user);
@@ -46,11 +46,11 @@ class FollowingController extends AbstractController
         /** @var User $currentUser */
         $currentUser = $this->getUser();
 
-        if ($currentUser->getId() === $user->getId() || !$currentUser->getFollowing()->contains($user)) {
+        if ($currentUser->getId() === $user->getId()) {
             return $this->makeResponse($user);
         }
 
-        $currentUser->getFollowing()->removeElement($user);
+        $currentUser->unfollow($user);
 
         $this->getDoctrine()->getManager()->flush();
         return $this->makeResponse($user);
