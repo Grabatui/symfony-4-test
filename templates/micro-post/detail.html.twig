@@ -24,45 +24,9 @@
     {{ parent() }}
 
     <script type="application/javascript">
-        const likeButton = document.getElementById(`like`);
-        const unlikeButton = document.getElementById(`unlike`);
-
-        const switchButtons = (button, oppositeButton) => {
-            button.style.display = `none`;
-            oppositeButton.style.display = `block`;
-        };
-
-        const addOnClickButtonEvent = (button, oppositeButton, path) => {
-            const callback = (event) => {
-                {% if not app.user %}
-                    return window.location.href = `{{ path('security_login') }}`;
-                {% endif %}
-
-                event.preventDefault();
-
-                button.disabled = true;
-
-                fetch(path, {credentials: `include`})
-                    .then((response) => response.json())
-                    .then((response) => {
-                        oppositeButton.querySelector(`.js-likes_count`).innerText = response.count;
-
-                        switchButtons(button, oppositeButton);
-
-                        button.disabled = false;
-                    })
-                    .catch(() => {
-                        switchButtons(button, oppositeButton);
-
-                        button.disabled = false;
-                    });
-            };
-
-            button.removeEventListener(`click`, callback);
-            button.addEventListener(`click`, callback);
-        };
-
-        addOnClickButtonEvent(likeButton, unlikeButton, `{{ path('likes_like', {'id': post.id}) }}`);
-        addOnClickButtonEvent(unlikeButton, likeButton, `{{ path('likes_unlike', {'id': post.id}) }}`);
+        window.PATHS.like = `{{ path('likes_like', {'id': post.id}) }}`;
+        window.PATHS.unlike = `{{ path('likes_unlike', {'id': post.id}) }}`;
     </script>
+
+    {{ encore_entry_script_tags('js/micro_post') }}
 {% endblock %}
