@@ -33,4 +33,17 @@ class NotificationController extends AbstractController
             'count' => $this->notificationRepository->getUnseenCountByUser($user),
         ]);
     }
+
+    /**
+     * @Route("/unseen", name="notification_unseen")
+     */
+    public function unseenNotifications()
+    {
+        $notifications = $this->notificationRepository->findBy([
+            'user' => $this->getUser(),
+            'seen' => false,
+        ]);
+
+        return $this->render('notification/list.html.twig', compact('notifications'));
+    }
 }

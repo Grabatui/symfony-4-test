@@ -20,9 +20,14 @@ const likeButtons = () => {
             fetch(path, {credentials: `include`})
                 .then((response) => response.json())
                 .then((response) => {
-                    oppositeButton.querySelector(`.js-likes_count`).innerText = response.count;
+                    const buttonCountElement = button.querySelector(`.js-likes_count`);
+                    const oppositeButtonCountElement = oppositeButton.querySelector(`.js-likes_count`);
 
-                    switchButtons(button, oppositeButton);
+                    if (parseInt(buttonCountElement.innerText.trim()) !== parseInt(response.count)) {
+                        oppositeButtonCountElement.innerText = response.count;
+
+                        switchButtons(button, oppositeButton);
+                    }
 
                     button.disabled = false;
                 })

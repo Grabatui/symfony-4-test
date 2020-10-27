@@ -28,6 +28,10 @@ class LikeController extends AbstractController
             return $this->json([], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
+        if ($microPost->isOwner($currentUser)) {
+            return $this->json(['count' => $microPost->getLikedBy()->count()]);
+        }
+
         $microPost->like($currentUser);
 
         $this->getDoctrine()->getManager()->flush();
@@ -48,6 +52,10 @@ class LikeController extends AbstractController
 
         if (!($currentUser instanceof User)) {
             return $this->json([], JsonResponse::HTTP_UNAUTHORIZED);
+        }
+
+        if ($microPost->isOwner($currentUser)) {
+            return $this->json(['count' => $microPost->getLikedBy()->count()]);
         }
 
         $microPost->unlike($currentUser);

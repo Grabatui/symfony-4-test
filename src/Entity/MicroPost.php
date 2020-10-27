@@ -133,6 +133,11 @@ class MicroPost
         return ($user instanceof User) ? $this->getLikedBy()->contains($user) : false;
     }
 
+    public function isOwner(User $user): bool
+    {
+        return $this->user->getId() === $user->getId();
+    }
+
     public function like(User $user): void
     {
         if ($this->isLikedByUser($user)) {
