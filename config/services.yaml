@@ -1,4 +1,5 @@
 parameters:
+    default_email_from: '%env(DEFAULT_EMAIL_FROM)%'
 
 services:
     _defaults:
@@ -23,3 +24,7 @@ services:
                   name: doctrine.event_subscriber
                   connection: default
             }
+
+    App\Mailer\Mailer:
+        arguments:
+            $defaultEmailFrom: '%default_email_from%'
