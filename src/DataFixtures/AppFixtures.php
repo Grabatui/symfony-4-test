@@ -61,6 +61,7 @@ class AppFixtures extends Fixture
         $user->setFullName('Admin admin');
         $user->setPassword($this->encoder->encodePassword($user, 'admin123'));
         $user->setRoles([User::ROLE_ADMIN]);
+        $user->setEnabled(true);
 
         return $user;
     }
@@ -73,6 +74,7 @@ class AppFixtures extends Fixture
         $user->setFullName('John Doe');
         $user->setPassword($this->encoder->encodePassword($user, 'john123'));
         $user->setRoles([User::ROLE_USER]);
+        $user->setEnabled(true);
 
         $this->addReference('john_doe', $user);
 
@@ -90,6 +92,7 @@ class AppFixtures extends Fixture
         $user->setFullName($this->faker->name);
         $user->setPassword($this->encoder->encodePassword($user, $this->faker->password));
         $user->setRoles([User::ROLE_USER]);
+        $user->setEnabled(true);
 
         return $user;
     }

@@ -67,6 +67,16 @@ class User implements UserInterface, Serializable
     private array $roles;
 
     /**
+     * @ORM\Column(type="string", nullable=true, length=30)
+     */
+    private ?string $confirmationToken;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private bool $enabled;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\MicroPost", mappedBy="user")
      */
     private Collection $posts;
@@ -101,6 +111,10 @@ class User implements UserInterface, Serializable
         $this->followers = new ArrayCollection;
         $this->following = new ArrayCollection;
         $this->microPostsLiked = new ArrayCollection;
+
+        $this->roles = [self::ROLE_USER];
+
+        $this->enabled = false;
     }
 
     public function getId(): ?int
@@ -177,7 +191,8 @@ class User implements UserInterface, Serializable
         return serialize([
             $this->id,
             $this->username,
-            $this->password
+            $this->password,
+            $this->enabled
         ]);
     }
 
@@ -186,7 +201,7 @@ class User implements UserInterface, Serializable
      */
     public function unserialize($serialized)
     {
-        [$this->id, $this->username, $this->password] = unserialize($serialized);
+        [$this->id, $this->username, $this->password, $this->enabled] = unserialize($serialized);
     }
 
     /**
@@ -270,6 +285,38 @@ class User implements UserInterface, Serializable
     public function getFollowing()
     {
         return $this->following;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getConfirmationToken(): ?string
+    {
+        return $this->confirmationToken;
+    }
+
+    /**
+     * @param string|null $confirmationToken
+     */
+    public function setConfirmationToken(?string $confirmationToken): void
+    {
+        $this->confirmationToken = $confirmationToken;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param bool $enabled
+     */
+    public function setEnabled(bool $enabled): void
+    {
+        $this->enabled = $enabled;
     }
 
     public function follow(User $userToFollow): void

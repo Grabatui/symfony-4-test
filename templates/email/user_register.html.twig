@@ -3,4 +3,4 @@
 <p>Hello {{ user.fullName }}!</p>
 <p>You've registered into the app!</p>
 
-<p><a href="{{ url('security_login') }}">Login</a></p>
+<p><a href="{{ url('security_confirm', {'token': user.confirmationToken}) }}">Confirm</a></p>

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Event\UserRegisterEvent;
 use App\Form\UserType;
+use App\Security\TokenGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,13 +19,17 @@ class RegisterController extends AbstractController
 
     private EventDispatcherInterface $eventDispatcher;
 
+    private TokenGenerator $tokenGenerator;
+
     public function __construct(
         UserPasswordEncoderInterface $passwordEncoder,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        TokenGenerator $tokenGenerator
     )
     {
         $this->passwordEncoder = $passwordEncoder;
         $this->eventDispatcher = $eventDispatcher;
+        $this->tokenGenerator = $tokenGenerator;
     }
 
     /**
@@ -44,7 +49,7 @@ class RegisterController extends AbstractController
             $password = $this->passwordEncoder->encodePassword($user, $user->getPlainPassword());
 
             $user->setPassword($password);
-            $user->setRoles([User::ROLE_USER]);
+            $user->setConfirmationToken($this->tokenGenerator->getRandomSecureToken(30));
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
