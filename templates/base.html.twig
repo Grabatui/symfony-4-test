@@ -26,7 +26,9 @@
             <ul class="navbar-nav px-3">
                 {% if is_granted('ROLE_USER') %}
                     <li class="nav-item text-nowrap">
-                        <a class="nav-link" href="{{ path('micro_post_add') }}">Add new</a>
+                        <a class="nav-link" href="{{ path('micro_post_add') }}">
+                            {{ 'Add new'|trans }}
+                        </a>
                     </li>
                 {% endif %}
             </ul>
@@ -37,7 +39,7 @@
                 {% if is_granted('ROLE_USER') %}
                     <li class="nav-item text-nowrap border-right border-secondary">
                         <a class="nav-link" href="{{ path('notification_unseen') }}">
-                            Notifications
+                            {{ 'Notifications'|trans }}
                             <span class="badge badge-light" id="notifications-count">
                                 <i class="fa fa-circle-notch fa-spin"></i>
                             </span>
@@ -49,11 +51,11 @@
                     </li>
 
                     <li class="nav-item text-nowrap">
-                        <a class="nav-link" href="{{ logout_path() }}">Sign out</a>
+                        <a class="nav-link" href="{{ logout_path() }}">{{ 'Sign out'|trans }}</a>
                     </li>
                 {% else %}
                     <li class="nav-item text-nowrap">
-                        <a class="nav-link" href="{{ path('security_login') }}">Sign in</a>
+                        <a class="nav-link" href="{{ path('security_login') }}">{{ 'Sign in'|trans }}</a>
                     </li>
                 {% endif %}
             </ul>
