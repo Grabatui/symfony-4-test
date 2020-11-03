@@ -1,4 +1,5 @@
 parameters:
+    locale: 'en'
     default_email_from: '%env(DEFAULT_EMAIL_FROM)%'
 
 services:
@@ -32,3 +33,7 @@ services:
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:
             - '%env(DATABASE_URL)%'
+
+    App\EventListener\LocaleSubscriber:
+        arguments:
+            $defaultLocale: '%locale%'
