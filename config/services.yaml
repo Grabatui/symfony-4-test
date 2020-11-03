@@ -28,3 +28,7 @@ services:
     App\Mailer\Mailer:
         arguments:
             $defaultEmailFrom: '%default_email_from%'
+
+    Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
+        arguments:
+            - '%env(DATABASE_URL)%'
