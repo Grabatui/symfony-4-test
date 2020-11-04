@@ -105,6 +105,11 @@ class User implements UserInterface, Serializable
      */
     private Collection $microPostsLiked;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\UserPreferences", cascade={"persist"})
+     */
+    private ?UserPreferences $preferences;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection;
@@ -343,5 +348,21 @@ class User implements UserInterface, Serializable
     public function getMicroPostsLiked()
     {
         return $this->microPostsLiked;
+    }
+
+    /**
+     * @return UserPreferences|null
+     */
+    public function getPreferences(): ?UserPreferences
+    {
+        return $this->preferences;
+    }
+
+    /**
+     * @param UserPreferences $preferences
+     */
+    public function setPreferences(UserPreferences $preferences): void
+    {
+        $this->preferences = $preferences;
     }
 }

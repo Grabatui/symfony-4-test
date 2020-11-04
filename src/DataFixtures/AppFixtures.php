@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\MicroPost;
 use App\Entity\User;
+use App\Entity\UserPreferences;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -12,15 +13,12 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
+    private const LANGUAGE_VARIANTS = ['en', 'ru'];
+
     private ObjectManager $manager;
 
-    /**
-     * @var UserPasswordEncoderInterface
-     */
     private UserPasswordEncoderInterface $encoder;
-    /**
-     * @var Generator
-     */
+
     private Generator $faker;
 
     public function __construct(UserPasswordEncoderInterface $encoder)
@@ -62,6 +60,7 @@ class AppFixtures extends Fixture
         $user->setPassword($this->encoder->encodePassword($user, 'admin123'));
         $user->setRoles([User::ROLE_ADMIN]);
         $user->setEnabled(true);
+        $user->setPreferences($this->makePreferences());
 
         return $user;
     }
@@ -75,6 +74,7 @@ class AppFixtures extends Fixture
         $user->setPassword($this->encoder->encodePassword($user, 'john123'));
         $user->setRoles([User::ROLE_USER]);
         $user->setEnabled(true);
+        $user->setPreferences($this->makePreferences());
 
         $this->addReference('john_doe', $user);
 
@@ -93,6 +93,7 @@ class AppFixtures extends Fixture
         $user->setPassword($this->encoder->encodePassword($user, $this->faker->password));
         $user->setRoles([User::ROLE_USER]);
         $user->setEnabled(true);
+        $user->setPreferences($this->makePreferences());
 
         return $user;
     }
@@ -120,5 +121,13 @@ class AppFixtures extends Fixture
         $user = $this->getReference($referenceCode);
 
         return $user;
+    }
+
+    private function makePreferences(): UserPreferences
+    {
+        $preferences = new UserPreferences();
+        $preferences->setLocale($this->faker->randomElement(self::LANGUAGE_VARIANTS));
+
+        return $preferences;
     }
 }
