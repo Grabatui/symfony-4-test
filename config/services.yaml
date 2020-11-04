@@ -34,6 +34,10 @@ services:
         arguments:
             - '%env(DATABASE_URL)%'
 
+    App\EventListener\UserSubscriber:
+        arguments:
+            $defaultLocale: '%locale%'
+
     App\EventListener\LocaleSubscriber:
         arguments:
             $defaultLocale: '%locale%'
